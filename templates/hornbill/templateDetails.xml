@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="template" version="4.0" client="site">
+	<name>hornbill</name>
+	<creationDate>2026</creationDate>
+	<author>Horizon Homes Real Estate</author>
+	<version>1.0.0</version>
+	<description>Horizon Homes Real Estate site template (Presentation Tier).</description>
+	<files>
+		<filename>index.php</filename>
+		<filename>templateDetails.xml</filename>
+		<folder>css</folder>
+		<folder>images</folder>
+	</files>
+	<positions>
+		<position>menu</position>
+	</positions>
+	<config>
+		<fields name="params">
+			<fieldset name="advanced">
+				<field
+					name="navigation"
+					type="radio"
+					label="Navigation style"
+					class="btn-group"
+					default="dark"
+				>
+					<option value="dark">Dark</option>
+					<option value="light">Light</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

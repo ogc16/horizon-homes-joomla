@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="4.0" method="upgrade">
+	<name>com_estate</name>
+	<author>Horizon Homes Real Estate</author>
+	<creationDate>2026</creationDate>
+	<copyright>Copyright (C) Horizon Homes Real Estate.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>info@horizonhomes.ke</authorEmail>
+	<authorUrl>https://horizonhomes.ke</authorUrl>
+	<version>1.0.0</version>
+	<description>Real estate component: property listings, agents and viewing-enquiry bookings. Built on Joomla's three-tier MVC architecture (Presentation - Business Logic - Data).</description>
+
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+
+	<files>
+		<folder>site</folder>
+	</files>
+
+	<administration>
+		<menu>COM_ESTATE</menu>
+		<files>
+			<folder>admin</folder>
+		</files>
+	</administration>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="company_name"
+					type="text"
+					label="Company name"
+					default="Horizon Homes"
+				/>
+				<field
+					name="currency"
+					type="text"
+					label="Currency symbol/prefix"
+					default="KES"
+				/>
+				<field
+					name="show_price"
+					type="radio"
+					label="Show prices publicly"
+					class="btn-group"
+					default="1"
+				>
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+
+</extension>

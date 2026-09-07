@@ -1,0 +1,19 @@
+# System / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Joomla runtime artifacts (not part of source)
+tmp/
+cache/*.*
+logs/
+
+# Local config / secrets
+configuration.php
+.env
+
+# OS OneDrive lock files
+~$*
+*.tmp
