@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset name="filters" addfieldprefix="Joomla\Component\Estate\Administrator\Field">
+		<field
+			name="search"
+			type="text"
+			inputmode="search"
+			label="JSEARCH_FILTER"
+			hint="JSEARCH_FILTER"
+			onchange="this.form.submit();"
+		/>
+		<field
+			name="published"
+			type="status"
+			label="JSTATUS"
+			multiple="true"
+			layout="joomla.form.field.list-fancy-select"
+			hint="JOPTION_SELECT_PUBLISHED"
+			onchange="this.form.submit();"
+		/>
+		<field
+			name="limit"
+			type="limitbox"
+			class="input-mini"
+			label="COM_CONTENT_FIELD_LIMIT_LABEL"
+			onchange="this.form.submit();"
+		/>
+	</fieldset>
+</form>

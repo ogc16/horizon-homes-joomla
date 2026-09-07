@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldset name="basic">
+	<field
+		name="company_name"
+		type="text"
+		label="COM_ESTATE_FIELD_COMPANY_NAME_LABEL"
+		default="Horizon Homes"
+	/>
+	<field
+		name="currency"
+		type="text"
+		label="COM_ESTATE_FIELD_CURRENCY_LABEL"
+		default="KES"
+	/>
+	<field
+		name="show_price"
+		type="radio"
+		label="COM_ESTATE_FIELD_SHOW_PRICE_LABEL"
+		class="btn-group btn-group-yesno"
+		default="1"
+	>
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>
+</fieldset>

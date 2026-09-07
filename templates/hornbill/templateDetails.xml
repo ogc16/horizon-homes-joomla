@@ -9,7 +9,6 @@
 		<filename>index.php</filename>
 		<filename>templateDetails.xml</filename>
 		<folder>css</folder>
-		<folder>images</folder>
 	</files>
 	<positions>
 		<position>menu</position>

@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="4.0" method="upgrade">
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="component" method="upgrade">
 	<name>com_estate</name>
 	<author>Horizon Homes Real Estate</author>
-	<creationDate>2026</creationDate>
+	<creationDate>2026-09</creationDate>
 	<copyright>Copyright (C) Horizon Homes Real Estate.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<authorEmail>info@horizonhomes.ke</authorEmail>
+	<authorEmail>admin@horizonhomes.ke</authorEmail>
 	<authorUrl>https://horizonhomes.ke</authorUrl>
 	<version>1.0.0</version>
 	<description>Real estate component: property listings, agents and viewing-enquiry bookings. Built on Joomla's three-tier MVC architecture (Presentation - Business Logic - Data).</description>
+
+	<namespace path="src">Joomla\Component\Estate</namespace>
 
 	<install>
 		<sql>
@@ -22,15 +24,30 @@
 		</sql>
 	</uninstall>
 
-	<files>
-		<folder>site</folder>
+	<files folder="site">
+		<folder>src</folder>
+		<folder>tmpl</folder>
 	</files>
+
+	<languages folder="site">
+		<language tag="en-GB">language/en-GB/en-GB.com_estate.ini</language>
+	</languages>
 
 	<administration>
 		<menu>COM_ESTATE</menu>
-		<files>
-			<folder>admin</folder>
+		<files folder="admin">
+			<folder>forms</folder>
+			<folder>services</folder>
+			<folder>src</folder>
+			<folder>tmpl</folder>
+			<folder>sql</folder>
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
 		</files>
+		<languages folder="admin">
+			<language tag="en-GB">language/en-GB/en-GB.com_estate.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_estate.sys.ini</language>
+		</languages>
 	</administration>
 
 	<config>
@@ -39,24 +56,24 @@
 				<field
 					name="company_name"
 					type="text"
-					label="Company name"
+					label="COM_ESTATE_FIELD_COMPANY_NAME_LABEL"
 					default="Horizon Homes"
 				/>
 				<field
 					name="currency"
 					type="text"
-					label="Currency symbol/prefix"
+					label="COM_ESTATE_FIELD_CURRENCY_LABEL"
 					default="KES"
 				/>
 				<field
 					name="show_price"
 					type="radio"
-					label="Show prices publicly"
-					class="btn-group"
+					label="COM_ESTATE_FIELD_SHOW_PRICE_LABEL"
+					class="btn-group btn-group-yesno"
 					default="1"
 				>
-					<option value="1">Yes</option>
-					<option value="0">No</option>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
 				</field>
 			</fieldset>
 		</fields>

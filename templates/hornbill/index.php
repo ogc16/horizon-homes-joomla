@@ -1,4 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?php
+
+/**
+ * @package     Joomla.Site
+ * @subpackage  Templates.hornbill
+ *
+ * @copyright   Copyright (C) Horizon Homes Real Estate.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+\defined('_JEXEC') or die;
+
+use Joomla\CMS\Router\Route;
+?>
 <!DOCTYPE html>
 <html lang="<?php echo $this->language; ?>" dir="<?php echo $this->direction; ?>">
 <head>
@@ -42,9 +55,9 @@
 			<div class="site-footer__col">
 				<h4>Quick Links</h4>
 				<ul>
-					<li><a href="<?php echo JRoute::_('index.php'); ?>">Home</a></li>
-					<li><a href="<?php echo JRoute::_('index.php?option=com_estate&view=listings'); ?>">Properties</a></li>
-					<li><a href="<?php echo JRoute::_('index.php?option=com_estate&task=listings.about'); ?>">About Us</a></li>
+					<li><a href="<?php echo Route::_('index.php'); ?>">Home</a></li>
+					<li><a href="<?php echo Route::_('index.php?option=com_estate&view=listings'); ?>">Properties</a></li>
+					<li><a href="<?php echo Route::_('index.php?option=com_estate&task=listings.about'); ?>">About Us</a></li>
 				</ul>
 			</div>
 		</div>
