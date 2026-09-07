@@ -136,7 +136,7 @@ $slides = array_values(array_filter(array_map(fn ($item) => (string) $item->main
 						</a>
 						<div class="estate-card__body">
 							<h3 class="estate-card__title"><a href="<?php echo $link; ?>"><?php echo $this->escape($item->title); ?></a></h3>
-							<p class="estate-card__price"><?php echo $this->formatPrice($item->price); ?>
+							<p class="estate-card__price"><?php echo $this->formatPrice($item->price, $item->currency ?? 'KSH'); ?>
 								<span class="estate-card__purpose">/ <?php echo $this->escape(ucfirst($item->sale_or_rent)); ?></span>
 							</p>
 							<ul class="estate-card__specs">

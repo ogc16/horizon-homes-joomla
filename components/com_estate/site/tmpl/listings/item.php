@@ -47,7 +47,7 @@ $gallery = $item ? $this->getModel()->getGallery($item) : [];
 
 	<div class="estate-detail__info">
 		<h1 class="estate-detail__title"><?php echo $this->escape($item->title); ?></h1>
-		<p class="estate-detail__price"><?php echo $this->formatPrice($item->price); ?>
+		<p class="estate-detail__price"><?php echo $this->formatPrice($item->price, $item->currency ?? 'KSH'); ?>
 			<span class="estate-detail__purpose">/ <?php echo $this->escape(ucfirst($item->sale_or_rent)); ?></span>
 		</p>
 		<p class="estate-detail__status estate-detail__status--<?php echo $this->escape($item->status); ?>">

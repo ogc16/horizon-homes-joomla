@@ -22,6 +22,10 @@ $filters = isset($this->filters) ? $this->filters : [];
 		<option value="">All cities</option>
 		<option value="Nairobi" <?php echo (isset($filters['city']) && $filters['city'] === 'Nairobi') ? 'selected' : ''; ?>>Nairobi</option>
 		<option value="Machakos" <?php echo (isset($filters['city']) && $filters['city'] === 'Machakos') ? 'selected' : ''; ?>>Machakos</option>
+		<option value="Kampala" <?php echo (isset($filters['city']) && $filters['city'] === 'Kampala') ? 'selected' : ''; ?>>Kampala</option>
+		<option value="Kigali" <?php echo (isset($filters['city']) && $filters['city'] === 'Kigali') ? 'selected' : ''; ?>>Kigali</option>
+		<option value="Dar es Salaam" <?php echo (isset($filters['city']) && $filters['city'] === 'Dar es Salaam') ? 'selected' : ''; ?>>Dar es Salaam</option>
+		<option value="Addis Ababa" <?php echo (isset($filters['city']) && $filters['city'] === 'Addis Ababa') ? 'selected' : ''; ?>>Addis Ababa</option>
 	</select>
 	<select name="property_type">
 		<option value="">All types</option>
@@ -58,7 +62,7 @@ $filters = isset($this->filters) ? $this->filters : [];
 			</a>
 			<div class="estate-card__body">
 				<h3 class="estate-card__title"><a href="<?php echo $link; ?>"><?php echo $this->escape($item->title); ?></a></h3>
-				<p class="estate-card__price"><?php echo $this->formatPrice($item->price); ?>
+				<p class="estate-card__price"><?php echo $this->formatPrice($item->price, $item->currency ?? 'KSH'); ?>
 					<span class="estate-card__purpose">/ <?php echo $this->escape(ucfirst($item->sale_or_rent)); ?></span>
 				</p>
 				<ul class="estate-card__specs">

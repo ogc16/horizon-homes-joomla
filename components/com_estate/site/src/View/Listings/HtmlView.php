@@ -44,28 +44,30 @@ class HtmlView extends BaseHtmlView
     }
 
     /**
-     * Format a price nicely (KES).
+     * Format a price nicely (KSh or USD).
      *
-     * @param   mixed  $price  Numeric price.
+     * @param   mixed   $price     Numeric price.
+     * @param   string  $currency  Currency code: KSH or USD.
      *
      * @return  string  Formatted price string.
      *
      * @since   1.0.0
      */
-    public static function formatPrice($price)
+    public static function formatPrice($price, $currency = 'KSH')
     {
         $number = (float) $price;
+        $prefix = strtoupper($currency) === 'USD' ? '$' : 'KSh ';
 
         if ($number >= 1000000) {
             $value = $number / 1000000;
 
-            return 'KES ' . number_format($value, $value == floor($value) ? 0 : 2) . 'M';
+            return $prefix . number_format($value, $value == floor($value) ? 0 : 2) . 'M';
         }
 
         if ($number >= 1000) {
-            return 'KES ' . number_format($number, 0);
+            return $prefix . number_format($number, 0);
         }
 
-        return 'KES ' . number_format($number, 2);
+        return $prefix . number_format($number, 2);
     }
 }

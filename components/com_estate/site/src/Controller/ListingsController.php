@@ -112,6 +112,60 @@ class ListingsController extends BaseController
     }
 
     /**
+     * Default view: properties list and single listing detail.
+     *
+     * Routes on the presence of an alias query parameter:
+     *  - with alias    -> single listing detail layout (item.php)
+     *  - without alias -> properties list layout (default.php), honouring the
+     *                     q / city / property_type / sale_or_rent filters.
+     *
+     * @param   boolean  $cachable   Whether the view output is cacheable.
+     * @param   array    $urlparams  Safe query params for caching.
+     *
+     * @return  void
+     *
+     * @since   1.0.0
+     */
+    public function display($cachable = false, $urlparams = [])
+    {
+        $view  = $this->getView('Listings', 'html', '', ['base_path' => $this->basePath]);
+        $model = $this->getModel('Listings');
+        $view->setModel($model, true);
+
+        $alias = $this->input->getString('alias', '');
+
+        if ($alias !== '') {
+            $item = $model->getListing($alias);
+
+            if ($item === null) {
+                Factory::getApplication()->setHeader('status', 404, true);
+            }
+
+            $view->set('item', $item);
+            $view->setLayout('item');
+            $view->display();
+
+            return;
+        }
+
+        $filters = [
+            'q'             => $this->input->getString('q', ''),
+            'city'          => $this->input->getString('city', ''),
+            'property_type' => $this->input->getString('property_type', ''),
+            'sale_or_rent'  => $this->input->getString('sale_or_rent', ''),
+        ];
+
+        $filters = array_filter($filters, static function ($value) {
+            return $value !== '';
+        });
+
+        $view->set('items', $model->getListings($filters, 0));
+        $view->set('filters', $filters);
+        $view->setLayout('default');
+        $view->display();
+    }
+
+    /**
      * The homepage / landing page.
      *
      * @return  void
@@ -120,6 +174,15 @@ class ListingsController extends BaseController
      */
     public function home()
     {
+        // Joomla falls back to the default (home) menu item when the URL carries
+        // no Itemid, injecting its task (listings.home) even for list/detail
+        // URLs. Re-dispatch those to the real list/detail rendering.
+        if ($this->input->get('view', '') !== '' || $this->input->getString('alias', '') !== '') {
+            $this->display();
+
+            return;
+        }
+
         $view = $this->getView('Listings', 'html', '', [
             'base_path' => $this->basePath,
             'layout'    => 'home',
