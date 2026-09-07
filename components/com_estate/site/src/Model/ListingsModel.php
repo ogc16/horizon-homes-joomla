@@ -31,12 +31,13 @@ class ListingsModel extends BaseDatabaseModel
      * Retrieve all published listings (optionally filtered).
      *
      * @param   array  $filters  Optional filters (city, property_type, sale_or_rent, q).
+     * @param   int    $limit    Optional maximum number of records (0 = no limit).
      *
      * @return  object[]  List of listing records (joined with agent info).
      *
      * @since   1.0.0
      */
-    public function getListings(array $filters = [])
+    public function getListings(array $filters = [], $limit = 0)
     {
         $db    = $this->getDatabase();
         $query = $db->getQuery(true);
@@ -64,6 +65,10 @@ class ListingsModel extends BaseDatabaseModel
                 . ' OR ' . $db->quoteName('a.city') . ' LIKE ' . $db->quote($search)
                 . ' OR ' . $db->quoteName('a.address') . ' LIKE ' . $db->quote($search) . ')'
             );
+        }
+
+        if ($limit > 0) {
+            $query->setLimit($limit);
         }
 
         $db->setQuery($query);
@@ -124,6 +129,61 @@ class ListingsModel extends BaseDatabaseModel
         }
 
         return $gallery;
+    }
+
+    /**
+     * Retrieve the active agents (shown on the About page team section).
+     *
+     * @return  object[]  List of agent records.
+     *
+     * @since   1.0.0
+     */
+    public function getAgents()
+    {
+        $db    = $this->getDatabase();
+        $query = $db->getQuery(true);
+
+        $query->select('*')
+            ->from($db->quoteName('#__estate_agents'))
+            ->where($db->quoteName('is_active') . ' = 1')
+            ->order($db->quoteName('ordering') . ' ASC, ' . $db->quoteName('id') . ' ASC');
+
+        $db->setQuery($query);
+
+        return $db->loadObjectList();
+    }
+
+    /**
+     * Aggregate figures for the homepage / about page (Business Logic → Data).
+     *
+     * @return  object  Stats object (listings, agents, featured).
+     *
+     * @since   1.0.0
+     */
+    public function getStats()
+    {
+        $db = $this->getDatabase();
+
+        $rows = $db->setQuery(
+            $db->getQuery(true)
+                ->select('COUNT(*) AS n, SUM(CASE WHEN a.featured = 1 THEN 1 ELSE 0 END) AS featured')
+                ->from($db->quoteName('#__estate_listings', 'a'))
+                ->where($db->quoteName('a.published') . ' = 1')
+        )->loadAssoc();
+
+        $agents = $db->setQuery(
+            $db->getQuery(true)
+                ->select('COUNT(*)')
+                ->from($db->quoteName('#__estate_agents'))
+                ->where($db->quoteName('is_active') . ' = 1')
+        )->loadResult();
+
+        return (object) [
+            'listings' => (int) ($rows['n'] ?? 0),
+            'featured' => (int) ($rows['featured'] ?? 0),
+            'agents'   => (int) $agents,
+            'years'    => 10,
+        ];
     }
 
     /**

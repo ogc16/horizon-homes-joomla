@@ -112,6 +112,28 @@ class ListingsController extends BaseController
     }
 
     /**
+     * The homepage / landing page.
+     *
+     * @return  void
+     *
+     * @since   1.0.0
+     */
+    public function home()
+    {
+        $view = $this->getView('Listings', 'html', '', [
+            'base_path' => $this->basePath,
+            'layout'    => 'home',
+        ]);
+
+        $model = $this->getModel('Listings');
+        $view->setModel($model, true);
+        $view->set('items', $model->getListings([], 3));
+        $view->set('stats', $model->getStats());
+        $view->set('filters', []);
+        $view->display();
+    }
+
+    /**
      * The about / company page.
      *
      * @return  void
@@ -127,6 +149,8 @@ class ListingsController extends BaseController
 
         $model = $this->getModel('Listings');
         $view->setModel($model, true);
+        $view->set('agents', $model->getAgents());
+        $view->set('stats', $model->getStats());
         $view->display();
     }
 }
