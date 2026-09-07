@@ -51,6 +51,7 @@ class ListingController extends BaseController
             'base_path' => $this->basePath,
         ]);
 
+        $view->setLayout('edit');
         $view->set('item', $this->getModel('Listing')->getItem($id));
         $view->set('agents', $this->getModel('Listing')->getAgents());
         $view->display();

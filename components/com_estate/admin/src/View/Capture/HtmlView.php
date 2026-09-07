@@ -10,8 +10,11 @@
 
 namespace Joomla\Component\Estate\Administrator\View\Capture;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\Component\Estate\Administrator\Model\CaptureModel;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -67,10 +70,33 @@ class HtmlView extends BaseHtmlView
      */
     public function display($tpl = null)
     {
-        $this->listing     = $this->get('Listing');
-        $this->tour        = $this->get('Tour');
-        $this->shots       = $this->get('Shots');
-        $this->stateLabels = $this->get('StateLabels');
+        $app       = Factory::getApplication();
+        $listingId = (int) $app->getInput()->getInt('listing_id', 0);
+
+        if ($listingId <= 0) {
+            $app->enqueueMessage('Please choose a listing first.', 'warning');
+            $app->redirect(Route::_('index.php?option=com_estate&view=listings', false));
+
+            return;
+        }
+
+        $model = Factory::getApplication()
+            ->bootComponent('com_estate')
+            ->getMVCFactory()
+            ->createModel('Capture', 'administrator');
+
+        $this->listing = $model->getListing($listingId);
+
+        if (!$this->listing) {
+            $app->enqueueMessage('Listing not found.', 'error');
+            $app->redirect(Route::_('index.php?option=com_estate&view=listings', false));
+
+            return;
+        }
+
+        $this->tour = $model->getOrCreateTour($listingId);
+        $this->shots = $model->getShots((int) $this->tour->id);
+        $this->stateLabels = CaptureModel::STATE_LABELS;
 
         $this->addToolbar();
 

@@ -52,8 +52,10 @@ class HtmlView extends BaseHtmlView
      */
     public function display($tpl = null)
     {
-        $this->item   = $this->get('Item');
-        $this->agents = $this->get('Agents');
+        if ($this->item === null) {
+            $this->item   = $this->get('Item');
+            $this->agents = $this->get('Agents');
+        }
 
         $this->addToolbar();
 

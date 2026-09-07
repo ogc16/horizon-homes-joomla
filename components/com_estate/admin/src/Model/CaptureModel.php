@@ -10,7 +10,7 @@
 
 namespace Joomla\Component\Estate\Administrator\Model;
 
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Database\ParameterType;
 
@@ -25,6 +25,19 @@ use Joomla\Database\ParameterType;
  */
 class CaptureModel extends BaseDatabaseModel
 {
+    /**
+     * The tour-state labels used across the capture UI.
+     *
+     * @var    string[]
+     * @since  1.0.0
+     */
+    public const STATE_LABELS = [
+        0 => 'None',
+        1 => 'Drafting',
+        2 => 'Ready for review',
+        3 => 'Published',
+    ];
+
     /**
      * The default guided capture sequence (room, position key, instructions).
      * Inserted when a tour is first created so the realtor knows the plan.
@@ -54,11 +67,12 @@ class CaptureModel extends BaseDatabaseModel
     public function getListing($id)
     {
         $db    = $this->getDatabase();
+        $id    = (int) $id;
         $query = $db->getQuery(true)
             ->select('*')
             ->from($db->quoteName('#__estate_listings'))
             ->where($db->quoteName('id') . ' = :id')
-            ->bind(':id', (int) $id, ParameterType::INTEGER)
+            ->bind(':id', $id, ParameterType::INTEGER)
             ->setLimit(1);
 
         $db->setQuery($query);
@@ -144,12 +158,13 @@ class CaptureModel extends BaseDatabaseModel
      */
     public function getShots($tourId)
     {
-        $db    = $this->getDatabase();
-        $query = $db->getQuery(true)
+        $db     = $this->getDatabase();
+        $tourId = (int) $tourId;
+        $query  = $db->getQuery(true)
             ->select('*')
             ->from($db->quoteName('#__estate_tour_shots'))
             ->where($db->quoteName('tour_id') . ' = :tour')
-            ->bind(':tour', (int) $tourId, ParameterType::INTEGER)
+            ->bind(':tour', $tourId, ParameterType::INTEGER)
             ->order($db->quoteName('ordering') . ' ASC');
 
         $db->setQuery($query);
@@ -169,11 +184,12 @@ class CaptureModel extends BaseDatabaseModel
     public function getShot($id)
     {
         $db    = $this->getDatabase();
+        $id    = (int) $id;
         $query = $db->getQuery(true)
             ->select('*')
             ->from($db->quoteName('#__estate_tour_shots'))
             ->where($db->quoteName('id') . ' = :id')
-            ->bind(':id', (int) $id, ParameterType::INTEGER)
+            ->bind(':id', $id, ParameterType::INTEGER)
             ->setLimit(1);
 
         $db->setQuery($query);

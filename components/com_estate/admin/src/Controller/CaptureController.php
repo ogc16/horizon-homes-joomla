@@ -10,10 +10,11 @@
 
 namespace Joomla\Component\Estate\Administrator\Controller;
 
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Session\Session;
+use Joomla\Component\Estate\Administrator\Model\CaptureModel;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -30,19 +31,6 @@ use Joomla\CMS\Session\Session;
  */
 class CaptureController extends BaseController
 {
-    /**
-     * The tour-state labels used across the editor UI.
-     *
-     * @var    string[]
-     * @since  1.0.0
-     */
-    public const STATE_LABELS = [
-        0 => 'None',
-        1 => 'Drafting',
-        2 => 'Ready for review',
-        3 => 'Published',
-    ];
-
     /**
      * Allowed panorama upload extensions.
      *
@@ -69,18 +57,7 @@ class CaptureController extends BaseController
             return;
         }
 
-        $model = $this->getModel('Capture');
-        $tour  = $model->getOrCreateTour($listingId);
-
-        $view = $this->getView('Capture', 'html', '', [
-            'base_path' => $this->basePath,
-        ]);
-
-        $view->set('listing', $model->getListing($listingId));
-        $view->set('tour', $tour);
-        $view->set('shots', $model->getShots((int) $tour->id));
-        $view->set('stateLabels', self::STATE_LABELS);
-        $view->display();
+        parent::display();
     }
 
     /**
@@ -208,7 +185,7 @@ class CaptureController extends BaseController
         $notes  = (string) $this->input->get('notes', '', 'raw');
         $listingId = (int) $this->input->get('listing_id', 0, 'int');
 
-        if (!Session::checkToken() || $tourId <= 0 || !array_key_exists($state, self::STATE_LABELS)) {
+        if (!Session::checkToken() || $tourId <= 0 || !array_key_exists($state, CaptureModel::STATE_LABELS)) {
             $this->fail('Invalid request.', $listingId);
 
             return;
