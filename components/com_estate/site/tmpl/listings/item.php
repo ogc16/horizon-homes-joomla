@@ -35,9 +35,9 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 		<?php $imageIndex = 0; ?>
 		<?php foreach ($gallery as $image) : ?>
 			<?php if ($imageIndex++ === 0) : ?>
-				<img class="estate-detail__feature" src="<?php echo $this->escape($image); ?>" alt="<?php echo $this->escape($item->title); ?>" />
+				<img class="estate-detail__feature" src="<?php echo $this->escape($image); ?>" alt="<?php echo $this->escape($item->title); ?>" data-gallery loading="lazy" />
 			<?php else : ?>
-				<img class="estate-detail__thumb" src="<?php echo $this->escape($image); ?>" alt="" loading="lazy" />
+				<img class="estate-detail__thumb" src="<?php echo $this->escape($image); ?>" alt="<?php echo $this->escape($item->title); ?> — photo <?php echo $imageIndex; ?>" loading="lazy" data-gallery />
 			<?php endif; ?>
 		<?php endforeach; ?>
 
@@ -51,6 +51,75 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 			</button>
 		<?php endif; ?>
 	</div>
+
+	<div id="estate-gallery-lightbox" class="estate-lightbox" hidden>
+		<div class="estate-lightbox__backdrop" onclick="EstateGallery.close()"></div>
+		<button type="button" class="estate-lightbox__close" onclick="EstateGallery.close()" aria-label="Close photo viewer">&times;</button>
+		<button type="button" class="estate-lightbox__nav estate-lightbox__nav--prev" onclick="EstateGallery.prev()" aria-label="Previous photo">&lsaquo;</button>
+		<figure class="estate-lightbox__stage">
+			<img id="estate-lightbox-img" src="" alt="" />
+			<figcaption id="estate-lightbox-caption"></figcaption>
+		</figure>
+		<button type="button" class="estate-lightbox__nav estate-lightbox__nav--next" onclick="EstateGallery.next()" aria-label="Next photo">&rsaquo;</button>
+	</div>
+
+	<script>
+	(function () {
+		var box = document.getElementById('estate-gallery-lightbox');
+		if (!box) {
+			return;
+		}
+		var current = -1;
+		var photos = function () {
+			return Array.prototype.slice.call(document.querySelectorAll('.estate-detail__gallery img[data-gallery]'));
+		};
+		var show = function (index) {
+			var list = photos();
+			if (!list.length) {
+				return;
+			}
+			current = (index + list.length) % list.length;
+			var img = list[current];
+			document.getElementById('estate-lightbox-img').src = img.src;
+			document.getElementById('estate-lightbox-img').alt = img.alt;
+			var caption = document.getElementById('estate-lightbox-caption');
+			caption.textContent = list.length > 1 ? (current + 1) + ' / ' + list.length : (img.alt || '');
+			var prev = document.querySelector('.estate-lightbox__nav--prev');
+			var next = document.querySelector('.estate-lightbox__nav--next');
+			if (prev) { prev.hidden = list.length < 2; }
+			if (next) { next.hidden = list.length < 2; }
+			box.hidden = false;
+			document.body.classList.add('estate-modal-open');
+		};
+		var EstateGallery = window.EstateGallery = {
+			open: function (img) {
+				var list = photos();
+				show(list.indexOf(img));
+			},
+			prev: function () { show(current - 1); },
+			next: function () { show(current + 1); },
+			close: function () {
+				box.hidden = true;
+				document.body.classList.remove('estate-modal-open');
+				current = -1;
+			}
+		};
+		document.addEventListener('click', function (e) {
+			var img = e.target && e.target.closest ? e.target.closest('img[data-gallery]') : null;
+			if (img) {
+				EstateGallery.open(img);
+			}
+		});
+		document.addEventListener('keydown', function (e) {
+			if (box.hidden) {
+				return;
+			}
+			if (e.key === 'Escape') { EstateGallery.close(); }
+			if (e.key === 'ArrowLeft') { EstateGallery.prev(); }
+			if (e.key === 'ArrowRight') { EstateGallery.next(); }
+		});
+	})();
+	</script>
 
 	<div class="estate-detail__info">
 		<h1 class="estate-detail__title"><?php echo $this->escape($item->title); ?></h1>
@@ -139,6 +208,7 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 	(function () {
 		var EstateTour = window.EstateTour = {
 			opened: false,
+			pendingOpen: false,
 			viewer: null,
 			config: null,
 			open: function () {
@@ -152,12 +222,20 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 					this.opened = true;
 					return;
 				}
-				if (!window.pannellum) {
+				if (window.pannellum) {
+					this.createViewer();
+				} else {
+					this.pendingOpen = true;
+				}
+				this.opened = true;
+			},
+			createViewer: function () {
+				if (this.viewer) {
 					return;
 				}
 				this.config = JSON.parse(document.getElementById('estate-tour-config').textContent || '{}');
 				this.viewer = window.pannellum.viewer('estate-tour-scene', this.config);
-				this.opened = true;
+				this.pendingOpen = false;
 			},
 			close: function () {
 				var modal = document.getElementById('estate-tour-modal');
@@ -165,6 +243,7 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 					modal.hidden = true;
 				}
 				document.body.classList.remove('estate-modal-open');
+				this.pendingOpen = false;
 				this.opened = false;
 			}
 		};
@@ -176,6 +255,11 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 			var s = document.createElement('script');
 			s.src = 'https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js';
 			s.async = true;
+			s.onload = function () {
+				if (window.EstateTour && window.EstateTour.pendingOpen) {
+					window.EstateTour.createViewer();
+				}
+			};
 			document.body.appendChild(s);
 		})();
 	})();
