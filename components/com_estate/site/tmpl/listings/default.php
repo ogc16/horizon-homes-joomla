@@ -39,6 +39,10 @@ $filters = isset($this->filters) ? $this->filters : [];
 		<option value="sale" <?php echo (isset($filters['sale_or_rent']) && $filters['sale_or_rent'] === 'sale') ? 'selected' : ''; ?>>For Sale</option>
 		<option value="rent" <?php echo (isset($filters['sale_or_rent']) && $filters['sale_or_rent'] === 'rent') ? 'selected' : ''; ?>>For Rent</option>
 	</select>
+	<select name="off_plan">
+		<option value="0">All listings</option>
+		<option value="1" <?php echo (isset($filters['off_plan']) && (int) $filters['off_plan'] === 1) ? 'selected' : ''; ?>>Off-plan only</option>
+	</select>
 	<button type="submit" class="btn-primary">Search</button>
 </form>
 
@@ -58,6 +62,9 @@ $filters = isset($this->filters) ? $this->filters : [];
 				<?php endif; ?>
 				<?php if ($item->featured) : ?>
 					<span class="estate-badge estate-badge--featured">Featured</span>
+				<?php endif; ?>
+				<?php if ((int) $item->off_plan) : ?>
+					<span class="estate-badge estate-badge--offplan">Off-plan</span>
 				<?php endif; ?>
 			</a>
 			<div class="estate-card__body">

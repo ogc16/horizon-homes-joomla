@@ -142,6 +142,7 @@ class ListingsController extends BaseController
             }
 
             $view->set('item', $item);
+            $view->set('tour', $item ? $model->getTour($item->id) : null);
             $view->setLayout('item');
             $view->display();
 
@@ -153,6 +154,7 @@ class ListingsController extends BaseController
             'city'          => $this->input->getString('city', ''),
             'property_type' => $this->input->getString('property_type', ''),
             'sale_or_rent'  => $this->input->getString('sale_or_rent', ''),
+            'off_plan'      => $this->input->getInt('off_plan', 0),
         ];
 
         $filters = array_filter($filters, static function ($value) {
@@ -192,6 +194,28 @@ class ListingsController extends BaseController
         $view->setModel($model, true);
         $view->set('items', $model->getListings([], 3));
         $view->set('stats', $model->getStats());
+        $view->set('offPlanCount', $model->countOffPlan());
+        $view->set('filters', []);
+        $view->display();
+    }
+
+    /**
+     * The off-plan investment opportunities page.
+     *
+     * @return  void
+     *
+     * @since   1.0.0
+     */
+    public function offplan()
+    {
+        $view = $this->getView('Listings', 'html', '', [
+            'base_path' => $this->basePath,
+            'layout'    => 'offplan',
+        ]);
+
+        $model = $this->getModel('Listings');
+        $view->setModel($model, true);
+        $view->set('items', $model->getListings(['off_plan' => 1], 0));
         $view->set('filters', []);
         $view->display();
     }

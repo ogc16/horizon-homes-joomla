@@ -58,6 +58,10 @@ class ListingsModel extends BaseDatabaseModel
             }
         }
 
+        if (isset($filters['off_plan']) && (int) $filters['off_plan'] === 1) {
+            $query->where($db->quoteName('a.off_plan') . ' = 1');
+        }
+
         if (!empty($filters['q'])) {
             $search = '%' . $filters['q'] . '%';
             $query->where(
@@ -184,6 +188,80 @@ class ListingsModel extends BaseDatabaseModel
             'agents'   => (int) $agents,
             'years'    => 10,
         ];
+    }
+
+    /**
+     * Retrieve a published 3D tour (with its ordered panorama shots) for a listing.
+     *
+     * @param   integer  $listingId  The listing id.
+     *
+     * @return  object|null  The tour record with ->shots, or null when not published / no images.
+     *
+     * @since   1.0.0
+     */
+    public function getTour($listingId)
+    {
+        $listingId = (int) $listingId;
+
+        if ($listingId <= 0) {
+            return null;
+        }
+
+        $db    = $this->getDatabase();
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from($db->quoteName('#__estate_tours'))
+            ->where($db->quoteName('listing_id') . ' = ' . $listingId)
+            ->where($db->quoteName('state') . ' = 3')
+            ->setLimit(1);
+
+        $db->setQuery($query);
+        $tour = $db->loadObject();
+
+        if (!$tour) {
+            return null;
+        }
+
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from($db->quoteName('#__estate_tour_shots'))
+            ->where($db->quoteName('tour_id') . ' = ' . (int) $tour->id)
+            ->where($db->quoteName('published') . ' = 1')
+            ->where($db->quoteName('image') . ' <> ' . $db->quote(''))
+            ->order($db->quoteName('ordering') . ' ASC');
+
+        $db->setQuery($query);
+        $shots = $db->loadObjectList();
+
+        if (!$shots) {
+            return null;
+        }
+
+        $tour->shots = $shots;
+
+        return $tour;
+    }
+
+    /**
+     * Count currently open off-plan opportunities.
+     *
+     * @return  integer
+     *
+     * @since   1.0.0
+     */
+    public function countOffPlan()
+    {
+        $db    = $this->getDatabase();
+        $query = $db->getQuery(true)
+            ->select('COUNT(*)')
+            ->from($db->quoteName('#__estate_listings', 'a'))
+            ->where($db->quoteName('a.published') . ' = 1')
+            ->where($db->quoteName('a.off_plan') . ' = 1')
+            ->where($db->quoteName('a.access') . ' IN (' . implode(',', $this->getAccessLevels()) . ')');
+
+        $db->setQuery($query);
+
+        return (int) $db->loadResult();
     }
 
     /**

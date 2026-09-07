@@ -16,6 +16,7 @@ use Joomla\CMS\Uri\Uri;
 /** @var \Joomla\Component\Estate\Site\View\Listings\HtmlView $this */
 $item    = isset($this->item) ? $this->item : null;
 $gallery = $item ? $this->getModel()->getGallery($item) : [];
+$tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 ?>
 <?php if (!$item) : ?>
 	<p>This property is no longer available.</p>
@@ -43,6 +44,12 @@ $gallery = $item ? $this->getModel()->getGallery($item) : [];
 		<?php if (!$gallery) : ?>
 			<div class="estate-detail__feature estate-detail__nophoto">Image coming soon</div>
 		<?php endif; ?>
+
+		<?php if ($tour) : ?>
+			<button type="button" class="estate-tour-btn" onclick="EstateTour.open()">
+				<span class="estate-tour-btn__icon">&#9778;</span> Take the 360&deg; tour
+			</button>
+		<?php endif; ?>
 	</div>
 
 	<div class="estate-detail__info">
@@ -62,6 +69,24 @@ $gallery = $item ? $this->getModel()->getGallery($item) : [];
 		</ul>
 
 		<p class="estate-detail__address"><?php echo $this->escape($item->address . ', ' . $item->city); ?></p>
+
+		<?php if ((int) $item->off_plan) : ?>
+			<div class="estate-offplan">
+				<span class="estate-badge estate-badge--offplan">Off-plan investment</span>
+				<h2>Invest off-plan, pay at today's price</h2>
+				<p>Lock in the current price now and pay through construction. Units like this typically appreciate
+					well before handover &mdash; a stronger buy than resale for investors.</p>
+				<ul class="estate-offplan__facts">
+					<li><span>Developer</span><strong><?php echo $this->escape($item->developer); ?></strong></li>
+					<?php if ($item->completion_date && $item->completion_date !== '0000-00-00') : ?>
+						<li><span>Expected completion</span><strong><?php echo $this->escape(date('F Y', strtotime($item->completion_date))); ?></strong></li>
+					<?php endif; ?>
+					<?php if (!empty($item->payment_plan)) : ?>
+						<li class="estate-offplan__plan"><span>Payment plan</span><strong><?php echo nl2br($this->escape($item->payment_plan)); ?></strong></li>
+					<?php endif; ?>
+				</ul>
+			</div>
+		<?php endif; ?>
 
 		<div class="estate-detail__description">
 			<h2>Description</h2>
@@ -95,3 +120,64 @@ $gallery = $item ? $this->getModel()->getGallery($item) : [];
 		</form>
 	</div>
 </div>
+
+<?php if ($tour) : ?>
+	<?php
+		$tourConfig = $this->tourConfig($tour);
+	?>
+	<div id="estate-tour-modal" class="estate-modal" hidden>
+		<div class="estate-modal__backdrop" onclick="EstateTour.close()"></div>
+		<div class="estate-modal__panel">
+			<button type="button" class="estate-modal__close" onclick="EstateTour.close()" aria-label="Close tour">&times;</button>
+			<div id="estate-tour-scene" class="estate-modal__scene"></div>
+		</div>
+	</div>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+	<script type="application/json" id="estate-tour-config"><?php echo $tourConfig; ?></script>
+	<script>
+	(function () {
+		var EstateTour = window.EstateTour = {
+			opened: false,
+			viewer: null,
+			config: null,
+			open: function () {
+				var modal = document.getElementById('estate-tour-modal');
+				if (!modal) {
+					return;
+				}
+				modal.hidden = false;
+				document.body.classList.add('estate-modal-open');
+				if (this.viewer) {
+					this.opened = true;
+					return;
+				}
+				if (!window.pannellum) {
+					return;
+				}
+				this.config = JSON.parse(document.getElementById('estate-tour-config').textContent || '{}');
+				this.viewer = window.pannellum.viewer('estate-tour-scene', this.config);
+				this.opened = true;
+			},
+			close: function () {
+				var modal = document.getElementById('estate-tour-modal');
+				if (modal) {
+					modal.hidden = true;
+				}
+				document.body.classList.remove('estate-modal-open');
+				this.opened = false;
+			}
+		};
+
+		(function loadPannellum() {
+			if (window.pannellum) {
+				return;
+			}
+			var s = document.createElement('script');
+			s.src = 'https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js';
+			s.async = true;
+			document.body.appendChild(s);
+		})();
+	})();
+	</script>
+<?php endif; ?>

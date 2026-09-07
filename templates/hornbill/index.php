@@ -32,6 +32,20 @@ use Joomla\CMS\Router\Route;
 					<jdoc:include type="modules" name="menu" style="none" />
 				</ul>
 			</nav>
+			<div class="currency-switch">
+				<label class="currency-switch__hint" for="estate-cc-select">Currency</label>
+				<select id="estate-cc-select">
+					<?php
+						$estateCc = strtoupper((string) ($_GET['cc'] ?? ''));
+						$estateCc = $estateCc === '' ? strtoupper((string) ($_COOKIE['estate_cc'] ?? '')) : $estateCc;
+						$estateCc = in_array($estateCc, ['KE', 'UG', 'TZ', 'RW'], true) ? $estateCc : 'KE';
+					?>
+					<option value="KE" <?php echo $estateCc === 'KE' ? 'selected' : ''; ?>>Kenya (KSh)</option>
+					<option value="UG" <?php echo $estateCc === 'UG' ? 'selected' : ''; ?>>Uganda (USh)</option>
+					<option value="TZ" <?php echo $estateCc === 'TZ' ? 'selected' : ''; ?>>Tanzania (TSh)</option>
+					<option value="RW" <?php echo $estateCc === 'RW' ? 'selected' : ''; ?>>Rwanda (RWF)</option>
+				</select>
+			</div>
 		</div>
 	</header>
 
@@ -65,5 +79,6 @@ use Joomla\CMS\Router\Route;
 			&copy; <?php echo date('Y'); ?> Horizon Homes Real Estate. All rights reserved.
 		</div>
 	</footer>
+	<script src="<?php echo $this->baseurl; ?>/templates/hornbill/js/estate-i18n.js"></script>
 </body>
 </html>

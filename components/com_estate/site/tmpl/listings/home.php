@@ -26,10 +26,10 @@ $slides = array_values(array_filter(array_map(fn ($item) => (string) $item->main
 	<div class="estate-hero__bg" role="presentation"></div>
 	<div class="estate-hero__bg" role="presentation"></div>
 	<div class="estate-hero__inner">
-		<h1 class="estate-hero__title">Find your next home in Kenya</h1>
+		<h1 class="estate-hero__title">Find your next home across East Africa</h1>
 		<p class="estate-hero__sub">
-			Handpicked houses, apartments, plots and commercial spaces across Nairobi
-			and beyond — guided by trusted local agents.
+			Handpicked houses, apartments, plots and commercial spaces in Kenya, Uganda,
+			Tanzania and Rwanda &mdash; guided by trusted local agents.
 		</p>
 
 		<form class="estate-search" action="<?php echo Route::_('index.php?option=com_estate&view=listings'); ?>" method="get">
@@ -116,6 +116,20 @@ $slides = array_values(array_filter(array_map(fn ($item) => (string) $item->main
 	</section>
 <?php endif; ?>
 
+<?php $offPlanCount = isset($this->offPlanCount) ? (int) $this->offPlanCount : 0; ?>
+<?php if ($offPlanCount > 0) : ?>
+	<section class="estate-offplan-teaser">
+		<div class="container estate-offplan-teaser__inner">
+			<div>
+				<h2>Invest in our off-plan developments</h2>
+				<p>Buy at today&rsquo;s prices, pay through construction and hand over to tenants ready-made.
+					<?php echo $offPlanCount; ?> investment opportunity<?php echo $offPlanCount === 1 ? '' : 'ies'; ?> are open right now.</p>
+			</div>
+			<a class="btn-primary btn-primary--sm" href="<?php echo Route::_('index.php?option=com_estate&task=listings.offplan'); ?>">Explore off-plan</a>
+		</div>
+	</section>
+<?php endif; ?>
+
 <?php if (!empty($items)) : ?>
 	<section class="estate-home-section">
 		<div class="container">
@@ -132,6 +146,9 @@ $slides = array_values(array_filter(array_map(fn ($item) => (string) $item->main
 							<?php endif; ?>
 							<?php if ($item->featured) : ?>
 								<span class="estate-badge estate-badge--featured">Featured</span>
+							<?php endif; ?>
+							<?php if ((int) $item->off_plan) : ?>
+								<span class="estate-badge estate-badge--offplan">Off-plan</span>
 							<?php endif; ?>
 						</a>
 						<div class="estate-card__body">

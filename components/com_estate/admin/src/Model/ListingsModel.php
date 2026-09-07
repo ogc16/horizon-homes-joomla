@@ -78,7 +78,10 @@ class ListingsModel extends ListModel
             ->from($db->quoteName('#__estate_listings', 'a'))
             ->join('LEFT', $db->quoteName('#__estate_agents', 'ag') . ' ON (' .
                 $db->quoteName('ag.id') . ' = ' . $db->quoteName('a.agent_id') . ')')
-            ->select('ag.name AS agent_name');
+            ->join('LEFT', $db->quoteName('#__estate_tours', 't') . ' ON (' .
+                $db->quoteName('t.listing_id') . ' = ' . $db->quoteName('a.id') . ')')
+            ->select('ag.name AS agent_name')
+            ->select('t.id AS tour_id, t.state AS tour_state');
 
         // Filter by published state.
         $published = $this->getState('filter.published');

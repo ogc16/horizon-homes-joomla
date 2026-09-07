@@ -82,6 +82,8 @@ class HtmlView extends BaseHtmlView
     {
         ToolbarHelper::title('Property Listings', 'tree-2');
 
+        ToolbarHelper::addNew('listing.edit');
+
         $toolbar = Toolbar::getInstance('toolbar');
 
         $dropdown = $toolbar->dropdownButton('status-group')

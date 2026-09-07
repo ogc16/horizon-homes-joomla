@@ -43,6 +43,10 @@ CREATE TABLE IF NOT EXISTS `#__estate_listings` (
   `sale_or_rent` VARCHAR(10) NOT NULL DEFAULT 'sale' COMMENT 'sale | rent',
   `price` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
   `currency` VARCHAR(3) NOT NULL DEFAULT 'KSH' COMMENT 'KSH | USD',
+  `off_plan` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1 = off-plan investment opportunity',
+  `developer` VARCHAR(120) NOT NULL DEFAULT '' COMMENT 'Developer/builder for off-plan units',
+  `completion_date` DATE NULL DEFAULT NULL COMMENT 'Expected off-plan completion',
+  `payment_plan` TEXT NULL COMMENT 'Staged payment terms for off-plan units',
   `bedrooms` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `bathrooms` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `area_sqft` INT(10) UNSIGNED NOT NULL DEFAULT 0,
@@ -94,6 +98,42 @@ CREATE TABLE IF NOT EXISTS `#__estate_bookings` (
   PRIMARY KEY (`id`),
   KEY `idx_listing` (`listing_id`),
   KEY `idx_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- Table: #__estate_tours
+-- A 360 virtual tour for a listing, assembled from ordered panorama shots.
+-- state: 0 none, 1 drafting, 2 ready for review, 3 published.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `#__estate_tours` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `listing_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `state` TINYINT(1) NOT NULL DEFAULT 0,
+  `notes` TEXT NULL,
+  `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_listing` (`listing_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- Table: #__estate_tour_shots
+-- One ordered panorama per capture position used to build the 3D tour.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `#__estate_tour_shots` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tour_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `listing_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `slot` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `room_label` VARCHAR(80) NOT NULL DEFAULT '',
+  `position_key` VARCHAR(20) NOT NULL DEFAULT '',
+  `instructions` TEXT NULL,
+  `image` VARCHAR(255) NOT NULL DEFAULT '',
+  `published` TINYINT(1) NOT NULL DEFAULT 1,
+  `ordering` INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_tour` (`tour_id`),
+  KEY `idx_listing` (`listing_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
@@ -156,3 +196,22 @@ INSERT INTO `#__estate_listings`
 
 ('Commercial Plot, Legetafo', 'commercial-plot-legetafo', 3, 'land', 'available', 'sale', 15000000.00, 'KSH', 0, 0, 21500, 'Legetafo, North of Addis', 'Addis Ababa',
 'A large titled commercial plot along the Legetafo road, ideal for warehouse or mixed-use development. Flat terrain, all-weather access and utilities to the gate.', 0, 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1400&q=80', '["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1400&q=80"]', 1);
+
+INSERT INTO `#__estate_listings`
+(`title`, `alias`, `agent_id`, `property_type`, `status`, `sale_or_rent`, `price`, `currency`, `off_plan`, `developer`, `completion_date`, `payment_plan`, `bedrooms`, `bathrooms`, `area_sqft`, `address`, `city`, `description`, `featured`, `main_image`, `gallery_json`, `published`, `ordering`) VALUES
+('Skyline Heights Residences, Upper Hill', 'skyline-heights-residences-upper-hill', 2, 'apartment', 'available', 'sale', 14500000.00, 'KSH', 1, 'Horizon Builds Ltd', '2027-06-30', 'Reserve from KSh 500,000. Pay a 30% deposit, then staged instalments through construction, with the balance on completion.', 3, 3, 2100, 'Upper Hill Road', 'Nairobi', 'A 24-storey off-plan development in Nairobi''s business district. Each residence features floor-to-ceiling glass, private balconies, rooftop gardens, gym, pool and a business lounge. Investment opportunity with flexible staged payment.', 0, 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1400&q=80', '["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1400&q=80"]', 0, 22),
+('Riverside Terraces, Ntinda', 'riverside-terraces-ntinda', 3, 'apartment', 'available', 'sale', 185000.00, 'USD', 1, 'Nile Crest Developments', '2027-12-15', 'USD 10,000 reservation fee; 40% payable during construction in tranches; balance on handover.', 2, 2, 1900, 'Ntinda - Kisaasi Road', 'Kampala', 'Riverside Terrace apartments are a gated off-plan community along the Ntinda ridge. Private balconies overlooking the valley, borehole water, standby power and a children''s park. Strong rental yields expected on completion.', 0, 'https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1400&q=80', '["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1400&q=80"]', 0, 23);
+
+-- Demo 3D tour for the first off-plan listing (sample 360 panoramas).
+INSERT INTO `#__estate_tours` (`listing_id`, `state`, `notes`)
+SELECT id, 3, 'Demo tour using sample 360 panoramas.'
+FROM `#__estate_listings`
+WHERE `alias` = 'skyline-heights-residences-upper-hill'
+LIMIT 1;
+SET @estate_tour = LAST_INSERT_ID();
+INSERT INTO `#__estate_tour_shots` (`tour_id`, `listing_id`, `slot`, `room_label`, `position_key`, `instructions`, `image`, `published`, `ordering`) VALUES
+(@estate_tour, (SELECT id FROM `#__estate_listings` WHERE `alias` = 'skyline-heights-residences-upper-hill' LIMIT 1), 1, 'Entrance & Lobby', 'A1', 'Stand at the entrance door, camera at 1.5 m height, and shoot a full 360 panorama facing INTO the space before stepping in.', 'https://pannellum.org/images/alma.jpg', 1, 1),
+(@estate_tour, (SELECT id FROM `#__estate_listings` WHERE `alias` = 'skyline-heights-residences-upper-hill' LIMIT 1), 2, 'Living / Lounge', 'A2', 'Move to the centre of the living area. Overlap at least 30% with the previous shot and keep the nodal point level.', 'https://pannellum.org/images/from-tree.jpg', 1, 2),
+(@estate_tour, (SELECT id FROM `#__estate_listings` WHERE `alias` = 'skyline-heights-residences-upper-hill' LIMIT 1), 3, 'Kitchen & Dining', 'B1', 'Place the camera above the counter line, away from mirrors and shiny appliances, and capture the full space.', 'https://pannellum.org/images/charles-street.jpg', 1, 3),
+(@estate_tour, (SELECT id FROM `#__estate_listings` WHERE `alias` = 'skyline-heights-residences-upper-hill' LIMIT 1), 4, 'Bedroom', 'B2', 'Shoot from the foot of the bed at eye level so the bed faces the camera; avoid duvets and clutter.', 'https://pannellum.org/images/cerro-toco-0.jpg', 1, 4),
+(@estate_tour, (SELECT id FROM `#__estate_listings` WHERE `alias` = 'skyline-heights-residences-upper-hill' LIMIT 1), 5, 'Balcony / View', 'C1', 'Aim the camera level with the railing and stitch the view back into the room for a seamless walk-out.', 'https://pannellum.org/images/tocopilla.jpg', 1, 5);
