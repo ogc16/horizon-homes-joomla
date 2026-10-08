@@ -240,4 +240,63 @@ class ListingsController extends BaseController
         $view->set('stats', $model->getStats());
         $view->display();
     }
+
+    /**
+     * Side-by-side property comparison view.
+     *
+     * Accepts a comma-separated list of listing IDs (max 4) via the "ids"
+     * query parameter, fetches published listings, and renders a comparison
+     * table.
+     *
+     * @return  void
+     *
+     * @since   1.0.0
+     */
+    public function compare()
+    {
+        $view = $this->getView('Listings', 'html', '', [
+            'base_path' => $this->basePath,
+            'layout'    => 'compare',
+        ]);
+
+        $model = $this->getModel('Listings');
+        $view->setModel($model, true);
+
+        $raw  = $this->input->getString('ids', '');
+        $ids  = array_values(array_unique(array_filter(array_map('intval', explode(',', $raw)))));
+        $ids  = array_slice($ids, 0, 4);
+
+        $items = [];
+
+        if (!empty($ids)) {
+            $db    = Factory::getContainer()->get('db');
+            $query = $db->getQuery(true)
+                ->select('a.*, ag.name AS agent_name')
+                ->from($db->quoteName('#__estate_listings', 'a'))
+                ->join('LEFT', $db->quoteName('#__estate_agents', 'ag') . ' ON (' .
+                    $db->quoteName('ag.id') . ' = ' . $db->quoteName('a.agent_id') . ')')
+                ->where($db->quoteName('a.published') . ' = 1')
+                ->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
+
+            $db->setQuery($query);
+            $items = $db->loadObjectList();
+
+            /* preserve the user's selection order */
+            $indexed = [];
+            foreach ($items as $row) {
+                $indexed[$row->id] = $row;
+            }
+            $ordered = [];
+            foreach ($ids as $id) {
+                if (isset($indexed[$id])) {
+                    $ordered[] = $indexed[$id];
+                }
+            }
+            $items = $ordered;
+        }
+
+        $view->set('items', $items);
+        $view->set('allIds', $ids);
+        $view->display();
+    }
 }

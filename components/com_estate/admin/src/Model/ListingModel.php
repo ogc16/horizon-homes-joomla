@@ -58,6 +58,8 @@ class ListingModel extends BaseDatabaseModel
                 'area_sqft'      => 0,
                 'address'        => '',
                 'city'           => '',
+                'latitude'       => '',
+                'longitude'      => '',
                 'description'    => '',
                 'featured'       => 0,
                 'published'      => 1,
@@ -173,7 +175,7 @@ class ListingModel extends BaseDatabaseModel
         $columns = [
             'title', 'alias', 'agent_id', 'property_type', 'status', 'sale_or_rent',
             'price', 'currency', 'off_plan', 'developer', 'completion_date', 'payment_plan',
-            'bedrooms', 'bathrooms', 'area_sqft', 'address', 'city', 'description',
+            'bedrooms', 'bathrooms', 'area_sqft', 'address', 'city', 'latitude', 'longitude', 'description',
             'featured', 'main_image', 'gallery_json', 'published', 'ordering',
         ];
 

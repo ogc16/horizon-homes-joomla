@@ -33,7 +33,10 @@ use Joomla\CMS\Router\Route;
 		<div class="estate-grid">
 			<?php foreach ($this->items as $item) : ?>
 				<?php $link = Route::_('index.php?option=com_estate&view=listings&alias=' . $item->alias); ?>
-				<article class="estate-card">
+				<article class="estate-card" data-id="<?php echo (int) $item->id; ?>">
+					<label class="estate-compare-check">
+						<input type="checkbox" data-compare-id="<?php echo (int) $item->id; ?>" /> Compare
+					</label>
 					<a class="estate-card__media" href="<?php echo $link; ?>">
 						<?php if ($item->main_image) : ?>
 							<img src="<?php echo $this->escape($item->main_image); ?>" alt="<?php echo $this->escape($item->title); ?>" loading="lazy" />

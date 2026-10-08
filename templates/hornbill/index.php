@@ -80,5 +80,6 @@ use Joomla\CMS\Router\Route;
 		</div>
 	</footer>
 	<script src="<?php echo $this->baseurl; ?>/templates/hornbill/js/estate-i18n.js"></script>
+	<script src="<?php echo $this->baseurl; ?>/templates/hornbill/js/estate-compare.js"></script>
 </body>
 </html>

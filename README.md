@@ -1,7 +1,14 @@
 # Horizon Homes Real Estate — Joomla 3-Tier Website
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Joomla 6](https://img.shields.io/badge/Joomla-6.x-blue.svg)](https://www.joomla.org/)
+[![PHP 8.3+](https://img.shields.io/badge/PHP-8.3%2B-purple.svg)](https://php.net/)
+
 A real estate company website built on the **Joomla CMS** and structured around a
 strict **3-tier architecture** (Presentation / Business Logic / Data).
+
+> 📄 See [`problem.md`](problem.md) for the asynchronous listing-ingestion
+> challenge this project is evolving toward.
 
 ## 🌐 The Three Tiers
 
@@ -21,6 +28,228 @@ This project keeps the three logical layers clearly separated, as Joomla expects
         └──────────── user actions ◄─────────┴──────────── results ◄──────────┘
 ```
 
+## 📐 UML Diagrams
+
+### Use Case Diagram
+
+```mermaid
+usecaseDiagram
+    actor Visitor as V
+    actor Manager as M
+    actor System as S
+
+    package "Horizon Homes" {
+        usecase "Browse Listings" as UC1
+        usecase "Search / Filter" as UC2
+        usecase "View Property Detail" as UC3
+        usecase "View Map (lat/lng)" as UC3b
+        usecase "Book a Viewing" as UC4
+        usecase "Compare Properties" as UC5
+        usecase "Switch Currency" as UC6
+        usecase "Manage Listings" as UC7
+        usecase "Publish / Unpublish" as UC8
+        usecase "Edit Listing (lat/lng)" as UC9
+        usecase "Ingest Listings (async)" as UC10
+    }
+
+    V --> UC1
+    V --> UC2
+    V --> UC3
+    UC3 --> UC3b
+    V --> UC4
+    V --> UC5
+    V --> UC6
+
+    M --> UC7
+    M --> UC8
+    M --> UC9
+
+    S --> UC10
+```
+
+### Class Diagram (com_estate component)
+
+```mermaid
+classDiagram
+    namespace Site {
+        class ListingsController {
+            +display()
+            +home()
+            +about()
+            +offplan()
+            +compare()
+            +saveBooking()
+        }
+        class ListingsModel {
+            +getListings(filters, limit) object[]
+            +getListing(alias) object
+            +getGallery(item) string[]
+            +getAgents() object[]
+            +getStats() object
+            +getTour(id) object
+            +countOffPlan() int
+        }
+        class ListingsHtmlView {
+            +display(tpl)
+            +formatPrice(price, currency) string
+            +currencyLabel() string
+            +tourConfig(tour) string
+        }
+        class CurrencyHelper {
+            +format(price, currency) string$
+        }
+    }
+
+    namespace Admin {
+        class ListingController {
+            +edit()
+            +save()
+            +apply()
+            +cancel()
+            -persist() int
+        }
+        class ListingModel {
+            +getItem(id) object
+            +getAgents() object[]
+            +aliasInUse(alias, id) bool
+            +nextFreeAlias(alias, id) string
+            +save(data) int
+        }
+        class AdminListingsController {
+            +publish()
+            +unpublish()
+            +trash()
+        }
+        class AdminListingsModel {
+            +getItems() object[]
+        }
+    }
+
+    namespace Templates {
+        class TemplateHornbill {
+            +index.php
+            +template.css
+            +estateCompareJs
+            +estateI18nJs
+        }
+    }
+
+    ListingsController --> ListingsModel : uses
+    ListingsController --> ListingsHtmlView : renders
+    ListingsHtmlView --> CurrencyHelper : formats prices
+    ListingController --> ListingModel : uses
+    AdminListingsController --> AdminListingsModel : uses
+    ListingsController ..> TemplateHornbill : presentation
+```
+
+### Sequence Diagram (listing detail page request)
+
+```mermaid
+sequenceDiagram
+    actor Browser
+    participant Nginx
+    participant JoomlaApp as Joomla (app.php)
+    participant Ctrl as ListingsController
+    participant Model as ListingsModel
+    participant DB as MySQL
+    participant View as ListingsHtmlView
+    participant Tmpl as item.php
+
+    Browser->>Nginx: GET /?view=listings&alias=karen-villa
+    Nginx->>JoomlaApp: FastCGI pass (index.php)
+    JoomlaApp->>JoomlaApp: Load autoload_psr4.php map<br/>(plugins incl. behaviour/taggable)
+    JoomlaApp->>Ctrl: display()
+    Ctrl->>Model: getListing(alias)
+    Model->>DB: SELECT a.*, ag.name ... WHERE alias = :alias
+    DB-->>Model: row
+    Model-->>Ctrl: item
+    Ctrl->>Model: getTour(id)
+    Model-->>Ctrl: tour | null
+    Ctrl->>View: set(item, tour) / setLayout('item')
+    View->>Tmpl: render()
+    Tmpl-->>Browser: HTML (gallery, price, specs,<br/>map (Leaflet lat/lng), enquiry form)
+```
+
+### Sequence Diagram (compare feature — client + server)
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Card as Card Checkbox
+    participant JS as estate-compare.js
+    participant LS as localStorage
+    participant Tray as Compare Tray
+    participant Ctrl as ListingsController::compare()
+    participant DB as MySQL
+
+    User->>Card: Check "Compare" on 2 properties
+    Card->>JS: change event
+    JS->>LS: toggleId() → [12, 34]
+    JS->>Tray: renderTray() (count, thumbnails, Compare Now)
+    User->>Tray: Click "Compare Now"
+    Tray->>Ctrl: GET ?task=listings.compare&ids=12,34
+    Ctrl->>DB: SELECT ... WHERE id IN (12,34) AND published=1
+    DB-->>Ctrl: rows (ordered by id list)
+    Ctrl-->>User: compare.php (side-by-side table)
+```
+
+### Component / Deployment Diagram
+
+```mermaid
+flowchart LR
+    subgraph "Azure App Service (Linux, PHP 8.3)"
+        NG[Nginx :8080]
+        PHP[PHP-FPM<br/>Joomla 6 + com_estate + hornbill]
+        NG --> PHP
+    end
+
+    subgraph "Data Tier"
+        DB[(MySQL 8.4 Flexible<br/>#__estate_listings<br/>#__estate_agents<br/>#__estate_bookings<br/>#__estate_tours)]
+    end
+
+    subgraph "Async Ingestion (challenge)"
+        API[Webhook / CSV / REST Producer]
+        Q[(Queue: Redis Streams<br/>or Azure Service Bus)]
+        W[Worker: validate → normalise → upsert]
+        QUAR[Quarantine Table]
+        API --> Q --> W
+        W --> QUAR
+    end
+
+    B[(Visitor Browser)] --> NG
+    PHP --> DB
+    W --> DB
+
+    subgraph "Repo layout"
+        T[Presentation: templates/hornbill/]
+        BL[Business: com_estate site/src + admin/src]
+        D[Data: com_estate sql/]
+        T --- BL --- D
+    end
+```
+
+### State Diagram (listing lifecycle)
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft : Admin creates listing
+    Draft --> Published : publish
+    Draft --> Trashed : trash
+    Published --> Unpublished : unpublish
+    Published --> Pending : status = pending
+    Published --> Sold : status = sold
+    Published --> Rented : status = rented
+    Unpublished --> Published : republish
+    Trashed --> Draft : restore
+    Pending --> Published : status = available
+    Sold --> [*]
+    state "Ingested (async)" as Ingested
+    [*] --> Ingested : ingestion service<br/>published = 0
+    Ingested --> Published : operator approval<br/>or trusted source auto-publish
+    Ingested --> Quarantined : validation failed
+    Quarantined --> Ingested : corrected re-ingest
+```
+
 ## 🏗 What's included
 
 - **`com_estate` component** (business + data tiers)
@@ -33,6 +262,52 @@ This project keeps the three logical layers clearly separated, as Joomla expects
   - Joomla admin backend to list/publish/unpublish/delete listings
 - **`hornbill` template** (presentation tier)
   - Responsive, modern real-estate layout (search bar, property cards, detail & booking UI)
+
+## 🐳 Run with Docker (recommended)
+
+The whole stack — Joomla 6, the `com_estate` component and a MariaDB database
+pre-loaded with the sample data — boots with one command. No local PHP,
+Joomla or MySQL install required.
+
+```bash
+# Optional: override the default ports/credentials first
+cp .env.example .env
+
+docker compose up -d --build
+```
+
+Then open **http://localhost:8080** (admin at `/administrator`).
+
+| Setting | Default |
+|---------|---------|
+| Site URL | http://localhost:8080 |
+| Admin URL | http://localhost:8080/administrator |
+| Admin user | `admin` |
+| Admin password | `Admin1234!Horizon` |
+| DB name / user / pass | `joomla` / `joomla` / `joomlapass` |
+
+### How it works
+
+- **`Dockerfile`** — based on the official `joomla:6.1-php8.3-apache` image.
+  Custom files are staged under `/usr/src/custom` because the base image
+  mounts `/var/www/html` as a volume.
+- **`docker/entrypoint.sh`** — copies the Joomla core, syncs the component,
+  template and assets into the webroot, removes the web installer, generates
+  `configuration.php` from env vars, waits for the database and starts Apache.
+- **`docker/mysql/initdb/01-joomla.sql`** — the database dump restored on the
+  first boot (menus, template assignment and `#__estate_*` seed data included).
+- **`docker-compose.yml`** — MariaDB 10.11 + the app, with health checks.
+
+### Useful commands
+
+```bash
+docker compose logs -f joomla     # follow the app logs
+docker compose down               # stop (keeps the database volume)
+docker compose down -v            # stop and wipe the database
+docker compose up -d --build      # rebuild after changing source files
+```
+
+> Need to reset to a clean database? `docker compose down -v && docker compose up -d`.
 
 ## 🚀 Install on XAMPP
 
@@ -113,4 +388,25 @@ components/com_estate/
 - Site listings: `http://localhost/joomla/index.php?option=com_estate&view=listings`
 - Single listing: `http://localhost/joomla/index.php/component/estate?view=listings&alias=modern-4-bedroom-villa-in-karen`
 - About: `http://localhost/joomla/index.php?option=com_estate&task=listings.about`
+- Compare: `http://localhost/joomla/index.php?option=com_estate&view=listings&task=listings.compare&ids=1,2,3`
 - Admin: `http://localhost/joomla/administrator`
+
+## 🧩 Key features
+- **Search & filter** — city, type, sale/rent, off-plan toggle
+- **Property detail** — gallery + lightbox, 360° Pannellum tour, agent card, enquiry form
+- **Map** — Leaflet/OpenStreetMap embed pinned to `latitude` / `longitude`
+- **Compare** — select up to 4 listings and view a side-by-side table
+- **Multi-currency** — KSh / USh / TSh / RWF with geo-IP auto-detection
+- **Admin CRUD** — full backend to create, edit, publish, and trash listings
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for
+branch naming, coding conventions, and the PR checklist. All participation is
+governed by our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE) — free to use, modify,
+and distribute, with attribution.
+

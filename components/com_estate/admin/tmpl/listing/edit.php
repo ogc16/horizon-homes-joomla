@@ -137,6 +137,19 @@ $currencyOptions = ['KSH', 'USD'];
 							</div>
 						</div>
 
+						<div class="row">
+							<div class="col-6 mb-3">
+								<label class="form-label" for="jform_latitude">Latitude</label>
+								<input type="text" name="jform[latitude]" id="jform_latitude" class="form-control"
+									value="<?php echo $this->escape($item->latitude); ?>" placeholder="e.g. -1.286389" />
+							</div>
+							<div class="col-6 mb-3">
+								<label class="form-label" for="jform_longitude">Longitude</label>
+								<input type="text" name="jform[longitude]" id="jform_longitude" class="form-control"
+									value="<?php echo $this->escape($item->longitude); ?>" placeholder="e.g. 36.817223" />
+							</div>
+						</div>
+
 						<div class="mb-3">
 							<label class="form-label" for="jform_description">Description</label>
 							<textarea name="jform[description]" id="jform_description" class="form-control" rows="10"><?php echo $this->escape($item->description); ?></textarea>

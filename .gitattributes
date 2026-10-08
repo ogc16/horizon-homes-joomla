@@ -1,0 +1,4 @@
+# Normalise line endings so shell scripts stay executable in Linux containers.
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.sql text eol=lf

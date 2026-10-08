@@ -51,7 +51,6 @@ class ListingController extends BaseController
             'base_path' => $this->basePath,
         ]);
 
-        $view->setLayout('edit');
         $view->set('item', $this->getModel('Listing')->getItem($id));
         $view->set('agents', $this->getModel('Listing')->getAgents());
         $view->display();
@@ -134,6 +133,8 @@ class ListingController extends BaseController
         $data['bathrooms'] = (int) ($data['bathrooms'] ?? 0);
         $data['area_sqft'] = (int) ($data['area_sqft'] ?? 0);
         $data['ordering'] = (int) ($data['ordering'] ?? 0);
+        $data['latitude'] = trim($data['latitude'] ?? '');
+        $data['longitude'] = trim($data['longitude'] ?? '');
 
         if (empty($data['alias'])) {
             $data['alias'] = OutputFilter::stringURLSafe($data['title']);

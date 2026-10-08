@@ -130,6 +130,8 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 			<?php echo $this->escape(ucfirst($item->status)); ?>
 		</p>
 
+		<button type="button" class="estate-compare-btn" data-compare-add="<?php echo (int) $item->id; ?>">Add to Compare</button>
+
 		<ul class="estate-detail__specs">
 			<li><strong><?php echo (int) $item->bedrooms; ?></strong> Bedrooms</li>
 			<li><strong><?php echo (int) $item->bathrooms; ?></strong> Bathrooms</li>
@@ -138,6 +140,29 @@ $tour    = isset($this->tour) && $this->tour ? $this->tour : null;
 		</ul>
 
 		<p class="estate-detail__address"><?php echo $this->escape($item->address . ', ' . $item->city); ?></p>
+
+		<?php
+			$lat = trim($item->latitude ?? '');
+			$lng = trim($item->longitude ?? '');
+			$hasCoords = $lat !== '' && $lng !== '' && is_numeric($lat) && is_numeric($lng);
+		?>
+		<?php if ($hasCoords) : ?>
+			<div class="estate-detail__map" id="estate-map" style="height:320px;width:100%;border-radius:12px;margin:16px 0;border:1px solid #ddd;"></div>
+			<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+			<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+			<script>
+			(function () {
+				var lat = <?php echo (float) $lat; ?>, lng = <?php echo (float) $lng; ?>;
+				var map = L.map('estate-map', {scrollWheelZoom: false}).setView([lat, lng], 15);
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
+					maxZoom: 19
+				}).addTo(map);
+				L.marker([lat, lng]).addTo(map).bindPopup('<?php echo $this->escape(addslashes($item->title)); ?>');
+				setTimeout(function () { map.invalidateSize(); }, 200);
+			})();
+			</script>
+		<?php endif; ?>
 
 		<?php if ((int) $item->off_plan) : ?>
 			<div class="estate-offplan">

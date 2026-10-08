@@ -1,0 +1,13 @@
+# Build context exclusions for the Horizon Homes Docker image.
+.git
+.gitignore
+# The DB dump is mounted at runtime by Compose, not baked into the image.
+docker/mysql
+# Local/editor noise
+**/*.md
+**/.DS_Store
+*.log
+tmp
+cache
+administrator/cache
+administrator/logs
