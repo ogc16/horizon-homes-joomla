@@ -1,0 +1,12 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 6
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    paths:
+        - components/com_estate
+        - administrator/components/com_estate
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

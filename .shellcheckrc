@@ -1,0 +1,2 @@
+# ShellCheck configuration for the Docker entrypoint and CI scripts.
+external-sources=true

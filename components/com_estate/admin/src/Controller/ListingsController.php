@@ -58,7 +58,7 @@ class ListingsController extends BaseController
     public function trash()
     {
         $app = Factory::getApplication();
-        $db  = Factory::getApplication()->getDatabase();
+        $db  = Factory::getContainer()->get('db');
         $pks = (array) $this->input->get('cid', [], 'array');
 
         if (!$pks) {
@@ -90,7 +90,7 @@ class ListingsController extends BaseController
     protected function updateListings($state)
     {
         $app = Factory::getApplication();
-        $db  = Factory::getApplication()->getDatabase();
+        $db  = Factory::getContainer()->get('db');
         $pks = (array) $this->input->get('cid', [], 'array');
 
         if (!$pks) {

@@ -50,6 +50,22 @@ class HtmlView extends BaseHtmlView
     protected $state;
 
     /**
+     * The filter form.
+     *
+     * @var    \Joomla\CMS\Form\Form|null
+     * @since  1.0.0
+     */
+    protected $filterForm;
+
+    /**
+     * The active filter values.
+     *
+     * @var    array
+     * @since  1.0.0
+     */
+    protected $activeFilters;
+
+    /**
      * Display the view.
      *
      * @param   string  $tpl  The name of the template file.

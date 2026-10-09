@@ -17,3 +17,7 @@ configuration.php
 # OS OneDrive lock files
 ~$*
 *.tmp
+
+# Tooling artifacts
+phpstan.phar
+*.phar

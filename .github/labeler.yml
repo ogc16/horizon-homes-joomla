@@ -1,0 +1,23 @@
+component:
+  - changed-files:
+      - any-glob-to-any-file: 'components/com_estate/**'
+
+template:
+  - changed-files:
+      - any-glob-to-any-file: 'templates/**'
+
+docker:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile'
+          - 'docker/**'
+          - 'docker-compose.yml'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'

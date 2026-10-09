@@ -18,9 +18,6 @@ CUSTOM="/usr/src/custom"
 cd "$WEBROOT"
 
 DB_HOST="${JOOMLA_DB_HOST:-db}"
-DB_USER="${JOOMLA_DB_USER:-joomla}"
-DB_PASSWORD="${JOOMLA_DB_PASSWORD:-}"
-DB_NAME="${JOOMLA_DB_NAME:-joomla}"
 
 # --- 1. Joomla core ---------------------------------------------------------
 if [ ! -e index.php ] && [ ! -e libraries/src/Version.php ]; then
@@ -35,9 +32,9 @@ if [ -d "$CUSTOM" ]; then
 
     # Component — replace wholesale so stale layouts from older images vanish.
     rm -rf "$WEBROOT/components/com_estate" \
-           "$WEBROOT/administrator/components/com_estate"
+        "$WEBROOT/administrator/components/com_estate"
     mkdir -p "$WEBROOT/components/com_estate" \
-             "$WEBROOT/administrator/components/com_estate"
+        "$WEBROOT/administrator/components/com_estate"
     cp -a "$CUSTOM/components/com_estate/."                "$WEBROOT/components/com_estate/"
     cp -a "$CUSTOM/administrator/components/com_estate/."  "$WEBROOT/administrator/components/com_estate/"
 
@@ -56,7 +53,7 @@ fi
 # by an earlier/older layout persists in the webroot volume and the component
 # namespace is never registered).
 rm -f "$WEBROOT/administrator/cache/autoload_psr4.php" \
-      "$WEBROOT/cache/autoload_psr4.php"
+    "$WEBROOT/cache/autoload_psr4.php"
 
 # --- 3. No web installer ----------------------------------------------------
 rm -rf "${WEBROOT}/installation"
@@ -64,6 +61,9 @@ rm -rf "${WEBROOT}/installation"
 # --- 4. configuration.php ---------------------------------------------------
 if [ ! -f "${WEBROOT}/configuration.php" ]; then
     echo "[entrypoint] Generating configuration.php ..."
+    # The PHP snippet is intentionally single-quoted so the shell leaves its
+    # variables alone; values are read via getenv() inside PHP.
+    # shellcheck disable=SC2016
     php -r '
         $tpl    = file_get_contents("/usr/local/share/joomla/configuration.php.template");
         $secret = bin2hex(random_bytes(16));
@@ -104,10 +104,10 @@ fi
 
 # --- 6. Permissions + launch ------------------------------------------------
 mkdir -p "$WEBROOT/tmp" "$WEBROOT/cache" \
-         "$WEBROOT/administrator/cache" "$WEBROOT/administrator/logs"
+    "$WEBROOT/administrator/cache" "$WEBROOT/administrator/logs"
 chown -R www-data:www-data "$WEBROOT/tmp" "$WEBROOT/cache" \
-        "$WEBROOT/administrator/cache" "$WEBROOT/administrator/logs" \
-        "$WEBROOT/configuration.php"
+    "$WEBROOT/administrator/cache" "$WEBROOT/administrator/logs" \
+    "$WEBROOT/configuration.php"
 
 echo "[entrypoint] Starting Apache ..."
 exec "$@"

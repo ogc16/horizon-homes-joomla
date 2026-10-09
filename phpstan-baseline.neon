@@ -1,0 +1,319 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot call method clearShot\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/CaptureController.php
+
+		-
+			message: '#^Cannot call method deleteStoredFile\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: administrator/components/com_estate/src/Controller/CaptureController.php
+
+		-
+			message: '#^Cannot call method getShot\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: administrator/components/com_estate/src/Controller/CaptureController.php
+
+		-
+			message: '#^Cannot call method saveTourState\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/CaptureController.php
+
+		-
+			message: '#^Cannot call method setShot\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/CaptureController.php
+
+		-
+			message: '#^Method Joomla\\Component\\Estate\\Administrator\\Controller\\CaptureController\:\:display\(\) has parameter \$urlparams with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: administrator/components/com_estate/src/Controller/CaptureController.php
+
+		-
+			message: '#^Return type \(void\) of method Joomla\\Component\\Estate\\Administrator\\Controller\\CaptureController\:\:display\(\) should be compatible with return type \(static\(Joomla\\CMS\\MVC\\Controller\\BaseController\)\) of method Joomla\\CMS\\MVC\\Controller\\BaseController\:\:display\(\)$#'
+			identifier: method.childReturnType
+			count: 1
+			path: administrator/components/com_estate/src/Controller/CaptureController.php
+
+		-
+			message: '#^Parameter \#2 \$urlparams \(bool\) of method Joomla\\Component\\Estate\\Administrator\\Controller\\DisplayController\:\:display\(\) should be compatible with parameter \$urlparams \(array\) of method Joomla\\CMS\\MVC\\Controller\\BaseController\:\:display\(\)$#'
+			identifier: method.childParameterType
+			count: 1
+			path: administrator/components/com_estate/src/Controller/DisplayController.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\MVC\\View\\ViewInterface\:\:set\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: administrator/components/com_estate/src/Controller/ListingController.php
+
+		-
+			message: '#^Cannot call method aliasInUse\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/ListingController.php
+
+		-
+			message: '#^Cannot call method getAgents\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/ListingController.php
+
+		-
+			message: '#^Cannot call method getItem\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/ListingController.php
+
+		-
+			message: '#^Cannot call method nextFreeAlias\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/ListingController.php
+
+		-
+			message: '#^Cannot call method save\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: administrator/components/com_estate/src/Controller/ListingController.php
+
+		-
+			message: '#^Constant Joomla\\Component\\Estate\\Administrator\\Model\\CaptureModel\:\:DEFAULT_SHOTS type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: administrator/components/com_estate/src/Model/CaptureModel.php
+
+		-
+			message: '#^Method Joomla\\Component\\Estate\\Administrator\\Model\\ListingModel\:\:save\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: administrator/components/com_estate/src/Model/ListingModel.php
+
+		-
+			message: '#^Parameter \#1 \$db of method Joomla\\Component\\Estate\\Administrator\\Model\\ListingModel\:\:quoteValue\(\) expects Joomla\\Database\\DatabaseDriver, Joomla\\Database\\DatabaseInterface given\.$#'
+			identifier: argument.type
+			count: 2
+			path: administrator/components/com_estate/src/Model/ListingModel.php
+
+		-
+			message: '#^Parameter \#2 \$value of method Joomla\\Database\\QueryInterface\:\:bind\(\) is passed by reference, so it expects variables only\.$#'
+			identifier: argument.byRef
+			count: 1
+			path: administrator/components/com_estate/src/Model/ListingModel.php
+
+		-
+			message: '#^Method Joomla\\Component\\Estate\\Administrator\\Model\\ListingsModel\:\:__construct\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: administrator/components/com_estate/src/Model/ListingsModel.php
+
+		-
+			message: '#^Method Joomla\\Component\\Estate\\Administrator\\Model\\ListingsModel\:\:getListQuery\(\) should return Joomla\\Database\\DatabaseQuery but returns Joomla\\Database\\QueryInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: administrator/components/com_estate/src/Model/ListingsModel.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\Application\\CMSApplicationInterface\:\:redirect\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: administrator/components/com_estate/src/View/Capture/HtmlView.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\Extension\\ComponentInterface\:\:getMVCFactory\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: administrator/components/com_estate/src/View/Capture/HtmlView.php
+
+		-
+			message: '#^Property Joomla\\Component\\Estate\\Administrator\\View\\Listing\\HtmlView\:\:\$agents type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: administrator/components/com_estate/src/View/Listing/HtmlView.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\Toolbar\\ToolbarButton\:\:toggleSplit\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: administrator/components/com_estate/src/View/Listings/HtmlView.php
+
+		-
+			message: '#^Property Joomla\\Component\\Estate\\Administrator\\View\\Listings\\HtmlView\:\:\$activeFilters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: administrator/components/com_estate/src/View/Listings/HtmlView.php
+
+		-
+			message: '#^Property Joomla\\Component\\Estate\\Administrator\\View\\Listings\\HtmlView\:\:\$items type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: administrator/components/com_estate/src/View/Listings/HtmlView.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Capture\\HtmlView\:\:\$listing\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/capture/default.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Capture\\HtmlView\:\:\$shots\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/capture/default.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Capture\\HtmlView\:\:\$stateLabels\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/capture/default.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Capture\\HtmlView\:\:\$tour\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/capture/default.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Listing\\HtmlView\:\:\$agents\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/listing/edit.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Listing\\HtmlView\:\:\$item\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/listing/edit.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Listings\\HtmlView\:\:\$items\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/listings/default.php
+
+		-
+			message: '#^Access to protected property Joomla\\Component\\Estate\\Administrator\\View\\Listings\\HtmlView\:\:\$pagination\.$#'
+			identifier: property.protected
+			count: 1
+			path: administrator/components/com_estate/tmpl/listings/default.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\MVC\\View\\ViewInterface\:\:set\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: components/com_estate/src/Controller/DisplayController.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\MVC\\View\\ViewInterface\:\:setModel\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: components/com_estate/src/Controller/DisplayController.php
+
+		-
+			message: '#^Parameter \#2 \$urlparams \(bool\) of method Joomla\\Component\\Estate\\Site\\Controller\\DisplayController\:\:display\(\) should be compatible with parameter \$urlparams \(array\) of method Joomla\\CMS\\MVC\\Controller\\BaseController\:\:display\(\)$#'
+			identifier: method.childParameterType
+			count: 1
+			path: components/com_estate/src/Controller/DisplayController.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\Application\\CMSApplicationInterface\:\:redirect\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\Application\\CMSApplicationInterface\:\:setHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\MVC\\View\\ViewInterface\:\:set\(\)\.$#'
+			identifier: method.notFound
+			count: 14
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\MVC\\View\\ViewInterface\:\:setLayout\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\MVC\\View\\ViewInterface\:\:setModel\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Cannot call method countOffPlan\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Cannot call method getAgents\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Cannot call method getListing\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Cannot call method getListings\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Cannot call method getStats\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Cannot call method getTour\(\) on bool\|Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Method Joomla\\Component\\Estate\\Site\\Controller\\ListingsController\:\:display\(\) has parameter \$urlparams with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Return type \(void\) of method Joomla\\Component\\Estate\\Site\\Controller\\ListingsController\:\:display\(\) should be compatible with return type \(static\(Joomla\\CMS\\MVC\\Controller\\BaseController\)\) of method Joomla\\CMS\\MVC\\Controller\\BaseController\:\:display\(\)$#'
+			identifier: method.childReturnType
+			count: 1
+			path: components/com_estate/src/Controller/ListingsController.php
+
+		-
+			message: '#^Method Joomla\\Component\\Estate\\Site\\Model\\ListingsModel\:\:getListings\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: components/com_estate/src/Model/ListingsModel.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\Application\\CMSApplicationInterface\:\:getParams\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: components/com_estate/src/View/Listings/HtmlView.php
+
+		-
+			message: '#^Call to an undefined method Joomla\\CMS\\MVC\\Model\\BaseDatabaseModel\:\:getGallery\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: components/com_estate/tmpl/listings/item.php

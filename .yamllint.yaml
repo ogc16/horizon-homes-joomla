@@ -1,0 +1,15 @@
+extends: default
+
+rules:
+  # GitHub Actions uses `on:` and long inline shell commands.
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off']
+  document-start: disable
+  line-length: disable
+  comments:
+    min-spaces-from-content: 1
+  empty-lines:
+    max: 2
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 1

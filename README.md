@@ -1,5 +1,8 @@
 # Horizon Homes Real Estate — Joomla 3-Tier Website
 
+[![CI](https://github.com/ogc16/horizon-homes-joomla/actions/workflows/ci.yml/badge.svg)](https://github.com/ogc16/horizon-homes-joomla/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ogc16/horizon-homes-joomla/actions/workflows/codeql.yml/badge.svg)](https://github.com/ogc16/horizon-homes-joomla/actions/workflows/codeql.yml)
+[![Security](https://github.com/ogc16/horizon-homes-joomla/actions/workflows/security.yml/badge.svg)](https://github.com/ogc16/horizon-homes-joomla/actions/workflows/security.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Joomla 6](https://img.shields.io/badge/Joomla-6.x-blue.svg)](https://www.joomla.org/)
 [![PHP 8.3+](https://img.shields.io/badge/PHP-8.3%2B-purple.svg)](https://php.net/)
@@ -308,6 +311,33 @@ docker compose up -d --build      # rebuild after changing source files
 ```
 
 > Need to reset to a clean database? `docker compose down -v && docker compose up -d`.
+
+## ✅ Quality & continuous integration
+
+Every push and pull request runs a full quality gate through GitHub Actions:
+
+| Workflow | What it enforces |
+|----------|------------------|
+| `ci.yml` | PHP 8.3/8.4 syntax matrix, PHPCS (PSR-12), ShellCheck, Hadolint, EditorConfig, Yamllint, plus a Docker build with PHPStan (level 6) and an end-to-end smoke test |
+| `codeql.yml` | CodeQL static analysis (JavaScript/TypeScript) |
+| `security.yml` | Gitleaks secret scan, Trivy filesystem scan, container SBOM, OpenSSF Scorecard |
+| `docker-publish.yml` | Multi-arch image (amd64/arm64) with provenance and SBOM, signed with Cosign (keyless); publishes a GitHub Release on `v*` tags |
+| `deploy.yml` | Manual, environment-gated deployment to Azure App Service |
+
+The same checks run locally through the `Makefile`:
+
+```bash
+make lint             # PHPCS, ShellCheck, Hadolint, EditorConfig, Yamllint
+make lint-php         # PHPCS (PSR-12) only
+make php-lint         # php -l over every component file
+make phpstan          # static analysis inside the running container
+make smoke            # route + content smoke test against the running stack
+```
+
+Linting and formatting rules live in `.editorconfig`, `phpcs.xml.dist`,
+`.editorconfig-checker.json`, `.shellcheckrc`, `.hadolint.yaml` and
+`.yamllint.yaml`. Install the git hooks with
+`pip install pre-commit && pre-commit install`.
 
 ## 🚀 Install on XAMPP
 

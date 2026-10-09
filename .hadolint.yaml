@@ -1,0 +1,5 @@
+# Hadolint configuration for the Horizon Homes Dockerfile.
+failure-threshold: warning
+ignored:
+  # Base image already pins the PHP/OS stack; we do not apt-install anything.
+  - DL3008

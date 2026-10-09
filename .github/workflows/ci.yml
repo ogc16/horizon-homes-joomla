@@ -5,56 +5,101 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  php-lint:
-    name: PHP syntax
+  php:
+    name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.3", "8.4"]
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php }}
           coverage: none
+          tools: none
 
-      - name: Lint every PHP file
+      - name: Syntax check every component file
         run: |
-          set -euo pipefail
-          mapfile -d '' files < <(find components templates docker -name '*.php' -type f -print0)
-          printf 'Linting %d files\n' "${#files[@]}"
-          printf '%s\0' "${files[@]}" | xargs -0 -n1 -P "$(nproc)" php -l
+          find components -name '*.php' -print0 \
+            | xargs -0 -n1 -P"$(nproc)" php -l
 
-  docker-smoke:
-    name: Docker build & smoke test
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: phpcs
 
-      - name: Validate compose file
-        run: docker compose config --quiet
+      - name: PHPCS (PSR-12)
+        run: phpcs --standard=phpcs.xml.dist
 
-      - name: Build image
-        run: docker compose build
+      - name: ShellCheck
+        run: shellcheck docker/entrypoint.sh .github/scripts/smoke.sh
 
-      - name: Start the stack
-        run: docker compose up -d --wait
+      - name: Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          config: .hadolint.yaml
+
+      - name: EditorConfig
+        uses: editorconfig-checker/action-editorconfig-checker@v2
+        with:
+          version: v4.0.2
+
+      - name: Yamllint
+        run: |
+          python -m pip install --user yamllint
+          python -m yamllint -c .yamllint.yaml docker-compose.yml .github
+
+  docker:
+    name: Docker build, PHPStan & smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and start the stack
+        run: docker compose up -d --build --wait
 
       - name: Smoke test
         run: bash .github/scripts/smoke.sh
 
-      - name: Dump logs on failure
+      - name: Static analysis (PHPStan)
+        run: |
+          curl -fsSL \
+            https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar \
+            -o phpstan.phar
+          docker compose cp phpstan.phar joomla:/tmp/phpstan.phar
+          docker compose cp phpstan.neon joomla:/var/www/html/phpstan.neon
+          docker compose cp phpstan-baseline.neon joomla:/var/www/html/phpstan-baseline.neon
+          docker compose cp phpstan-bootstrap.php joomla:/var/www/html/phpstan-bootstrap.php
+          docker compose exec -T -w /var/www/html joomla \
+            php /tmp/phpstan.phar analyse -c phpstan.neon --no-progress
+
+      - name: Container logs (on failure)
         if: failure()
         run: docker compose logs --no-color
 

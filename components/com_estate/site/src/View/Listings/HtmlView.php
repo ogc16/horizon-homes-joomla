@@ -30,6 +30,14 @@ use Joomla\Component\Estate\Site\Helper\CurrencyHelper;
 class HtmlView extends BaseHtmlView
 {
     /**
+     * The component parameters.
+     *
+     * @var    \Joomla\Registry\Registry
+     * @since  1.0.0
+     */
+    protected $params;
+
+    /**
      * Display the view.
      *
      * @param   string  $tpl  The name of the template file.
