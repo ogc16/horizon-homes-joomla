@@ -13,7 +13,10 @@
     "media/",
     "templates/",
     "\\.sql$",
-    "\\.(jpg|jpeg|png|gif|ico|webp|svg)$"
+    "\\.(jpg|jpeg|png|gif|ico|webp|svg)$",
+    "\\.phar$",
+    "\\.sarif$",
+    "sbom\\.spdx\\.json$"
   ],
   "AllowedContentTypes": [],
   "PassedFiles": [],
