@@ -25,7 +25,7 @@ jobs:
       url: https://horizon-homes-live.azurewebsites.net
     steps:
       - name: Log in to Azure
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
