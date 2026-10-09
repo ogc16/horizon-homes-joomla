@@ -36,24 +36,25 @@ This project keeps the three logical layers clearly separated, as Joomla expects
 ### Use Case Diagram
 
 ```mermaid
-usecaseDiagram
-    actor Visitor as V
-    actor Manager as M
-    actor System as S
+flowchart LR
+    V(["Visitor"])
+    M(["Manager"])
+    S(["System"])
 
-    package "Horizon Homes" {
-        usecase "Browse Listings" as UC1
-        usecase "Search / Filter" as UC2
-        usecase "View Property Detail" as UC3
-        usecase "View Map (lat/lng)" as UC3b
-        usecase "Book a Viewing" as UC4
-        usecase "Compare Properties" as UC5
-        usecase "Switch Currency" as UC6
-        usecase "Manage Listings" as UC7
-        usecase "Publish / Unpublish" as UC8
-        usecase "Edit Listing (lat/lng)" as UC9
-        usecase "Ingest Listings (async)" as UC10
-    }
+    subgraph HH["Horizon Homes"]
+        direction TB
+        UC1(["Browse Listings"])
+        UC2(["Search / Filter"])
+        UC3(["View Property Detail"])
+        UC3b(["View Map (lat/lng)"])
+        UC4(["Book a Viewing"])
+        UC5(["Compare Properties"])
+        UC6(["Switch Currency"])
+        UC7(["Manage Listings"])
+        UC8(["Publish / Unpublish"])
+        UC9(["Edit Listing (lat/lng)"])
+        UC10(["Ingest Listings (async)"])
+    end
 
     V --> UC1
     V --> UC2
