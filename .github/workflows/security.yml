@@ -41,7 +41,7 @@ jobs:
           docker run --rm \
             -v "${GITHUB_WORKSPACE}:/src" \
             -w /src \
-            aquasecurity/trivy:0.75.0 fs \
+            aquasec/trivy:0.75.0 fs \
             --format sarif \
             --output trivy-results.sarif \
             --severity CRITICAL,HIGH \
