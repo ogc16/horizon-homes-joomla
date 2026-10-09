@@ -37,14 +37,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@v0.28.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: sarif
-          output: trivy-results.sarif
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
+        run: |
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/src" \
+            -w /src \
+            aquasecurity/trivy:0.75.0 fs \
+            --format sarif \
+            --output trivy-results.sarif \
+            --severity CRITICAL,HIGH \
+            --ignore-unfixed \
+            .
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
