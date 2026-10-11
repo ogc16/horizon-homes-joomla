@@ -86,11 +86,7 @@ jobs:
           output-file: sbom.spdx.json
 
       - name: Sign SBOM (keyless)
-        run: |
-          cosign sign-blob --yes `
-            --output-signature sbom.spdx.json.sig `
-            --output-certificate sbom.spdx.json.pem `
-            sbom.spdx.json
+        run: cosign sign-blob --yes --output-signature sbom.spdx.json.sig --output-certificate sbom.spdx.json.pem sbom.spdx.json
 
       - name: Attach SBOM
         uses: actions/attest-sbom@bd218ad0dbcb3e146bd073d1d9c6d78e08aa8a0b # v2
