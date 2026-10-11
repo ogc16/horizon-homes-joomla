@@ -10,12 +10,12 @@
 	var KEY = 'estate_compare';
 	var MAX = 4;
 	var base = (document.querySelector('base') || {}).href || '';
+	var util = window.EstateUtil;
 
 	function getIds() {
 		try {
 			var raw = localStorage.getItem(KEY);
-			var arr = raw ? JSON.parse(raw) : [];
-			return Array.isArray(arr) ? arr.filter(function (v) { return typeof v === 'number' && v > 0; }) : [];
+			return util.sanitizeIds(raw ? JSON.parse(raw) : []);
 		} catch (e) {
 			return [];
 		}
@@ -28,21 +28,15 @@
 	}
 
 	function toggleId(id) {
-		var ids = getIds();
-		var idx = ids.indexOf(id);
-		if (idx === -1) {
-			if (ids.length >= MAX) { return false; }
-			ids.push(id);
-		} else {
-			ids.splice(idx, 1);
+		var result = util.toggleId(getIds(), id, MAX);
+		if (result.ok) {
+			saveIds(result.ids);
 		}
-		saveIds(ids);
-		return true;
+		return result.ok;
 	}
 
 	function removeId(id) {
-		var ids = getIds().filter(function (v) { return v !== id; });
-		saveIds(ids);
+		saveIds(util.removeId(getIds(), id));
 	}
 
 	function clearAll() {
@@ -65,9 +59,7 @@
 	}
 
 	function compareUrl() {
-		var ids = getIds();
-		if (!ids.length) { return ''; }
-		return base + 'index.php?option=com_estate&view=listings&task=listings.compare&ids=' + ids.join(',');
+		return util.compareUrl(base, getIds());
 	}
 
 	/* ---------- Tray ---------- */
