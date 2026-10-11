@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 #
 # Horizon Homes — Joomla 6 real-estate site
 #
@@ -11,7 +11,7 @@
 # The database is restored from a pre-built dump (docker/mysql/initdb) so the
 # site boots with its full working state: menus, template assignment,
 # #__estate_* tables and seed data.
-FROM joomla:6.1-php8.3-apache
+FROM joomla:6.1-php8.3-apache@sha256:855ae226abf6326abb00a4c6617cd8401cf95d71f226d77e9f4889b3073b90d3
 
 LABEL org.opencontainers.image.title="Horizon Homes" \
       org.opencontainers.image.description="Joomla 6 real-estate site (com_estate + hornbill template)" \
