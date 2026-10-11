@@ -21,3 +21,6 @@ configuration.php
 # Tooling artifacts
 phpstan.phar
 *.phar
+
+# Node tooling
+node_modules/

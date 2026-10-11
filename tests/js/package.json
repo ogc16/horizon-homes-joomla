@@ -1,0 +1,13 @@
+{
+  "name": "horizon-homes-js-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Property-based tests for the Horizon Homes front-end helpers.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "fast-check": "^3.23.2"
+  }
+}
