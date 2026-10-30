@@ -11,7 +11,7 @@
 # The database is restored from a pre-built dump (docker/mysql/initdb) so the
 # site boots with its full working state: menus, template assignment,
 # #__estate_* tables and seed data.
-FROM joomla:6.1-php8.3-apache@sha256:855ae226abf6326abb00a4c6617cd8401cf95d71f226d77e9f4889b3073b90d3
+FROM joomla:6.1-php8.3-apache@sha256:a1e76cbd87377228356b00115b702bdf75f5b4d3abab1ae87d577e221166e650
 
 LABEL org.opencontainers.image.title="Horizon Homes" \
       org.opencontainers.image.description="Joomla 6 real-estate site (com_estate + hornbill template)" \
